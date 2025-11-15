@@ -57,8 +57,49 @@ export function usePWA() {
 
   // Update service worker
   const updateApp = async () => {
-    if (updateSW) {
-      await updateSW(true)
+    try {
+      if (updateSW) {
+        console.log('Updating service worker via updateSW...')
+        await updateSW(true)
+      } else {
+        console.log('updateSW not available, trying alternative update method...')
+        
+        // Alternative method: Try to get the service worker registration and update it
+        if ('serviceWorker' in navigator) {
+          const registration = await navigator.serviceWorker.ready
+          
+          // Check for updates
+          await registration.update()
+          
+          // If there's a waiting service worker, activate it
+          if (registration.waiting) {
+            console.log('Found waiting service worker, activating...')
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+            
+            // Listen for the controlling service worker to change
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+              console.log('Controller changed, reloading page...')
+              window.location.reload()
+            })
+          } else {
+            console.log('No waiting service worker found, using force update...')
+            // If no waiting service worker, do a force update
+            await forceUpdate({
+              clearLocalStorage: false,
+              clearSessionStorage: true,
+              clearIndexedDB: false,
+              clearCaches: true
+            })
+          }
+        } else {
+          console.log('Service workers not supported, doing hard reload...')
+          window.location.reload(true)
+        }
+      }
+    } catch (error) {
+      console.error('Error updating app:', error)
+      // Fallback: force reload
+      window.location.reload(true)
     }
   }
 
@@ -170,12 +211,22 @@ export function usePWA() {
 
       // Handle service worker messages
       navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'SW_UPDATED') {
+        console.log('Service worker message received:', event.data)
+        
+        if (event.data && (event.data.type === 'SW_UPDATED' || event.data.type === 'workbox-broadcast-update')) {
           // Only show update prompt if not shown this session
           if (!hasPromptBeenShown(SESSION_KEYS.UPDATE_PROMPT_SHOWN)) {
+            console.log('Showing update prompt due to SW message')
             needRefresh.value = true
           }
         }
+      })
+      
+      // Also listen for service worker controller changes
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('Service worker controller changed - new version active')
+        // Reload the page to use the new service worker
+        window.location.reload()
       })
     }
 
@@ -184,21 +235,39 @@ export function usePWA() {
     if (isStandalone) {
       canInstall.value = false
     }
+    
+    // Periodically check for updates (every 5 minutes)
+    setInterval(async () => {
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.ready
+          await registration.update()
+        } catch (error) {
+          console.log('Periodic update check failed:', error)
+        }
+      }
+    }, 5 * 60 * 1000) // 5 minutes
   })
 
   // Initialize Vite PWA plugin integration
   const initVitePWA = () => {
+    console.log('Initializing Vite PWA...')
+    
     // Wait for the PWA registration to be available
-    const checkPWARegistration = () => {
+    const checkPWARegistration = (retryCount = 0) => {
       if (typeof window !== 'undefined' && window.__vite_plugin_pwa_sw_register__) {
+        console.log('Vite PWA plugin found, registering...')
+        
         updateSW = window.__vite_plugin_pwa_sw_register__(true, {
           onNeedRefresh() {
+            console.log('PWA: Need refresh triggered')
             // Only show update prompt if not shown this session
             if (!hasPromptBeenShown(SESSION_KEYS.UPDATE_PROMPT_SHOWN)) {
               needRefresh.value = true
             }
           },
           onOfflineReady() {
+            console.log('PWA: Offline ready triggered')
             // Only show offline ready prompt if not shown this session
             if (!hasPromptBeenShown(SESSION_KEYS.OFFLINE_PROMPT_SHOWN)) {
               offlineReady.value = true
@@ -208,11 +277,20 @@ export function usePWA() {
             console.error('SW registration error:', error)
           }
         })
+        
+        console.log('Vite PWA initialized successfully')
       } else {
-        // Retry after a short delay if not available yet
-        setTimeout(checkPWARegistration, 100)
+        // Retry up to 50 times (5 seconds) with increasing delay
+        if (retryCount < 50) {
+          const delay = Math.min(100 + (retryCount * 10), 500)
+          setTimeout(() => checkPWARegistration(retryCount + 1), delay)
+        } else {
+          console.warn('Vite PWA plugin not found after retrying. PWA features may be limited.')
+          console.log('Available on window:', Object.keys(window).filter(k => k.includes('pwa') || k.includes('sw')))
+        }
       }
     }
+    
     checkPWARegistration()
   }
 

@@ -23,7 +23,7 @@
         <p>A new version of Wavemaker Cards is available. Update now to get the latest features and improvements.</p>
       </div>
       <div class="pwa-prompt-actions">
-        <button @click="updateApp" class="pwa-btn primary">Update Now</button>
+        <button @click="handleUpdateApp" class="pwa-btn primary">Update Now</button>
         <button @click="closeUpdatePrompt" class="pwa-btn secondary">Later</button>
       </div>
     </div>
@@ -46,6 +46,7 @@
 
 <script setup>
 import { usePWA } from '@/composables/usePWA.js'
+import { watch } from 'vue'
 
 const {
   needRefresh,
@@ -57,6 +58,29 @@ const {
   closeInstallPrompt,
   closeOfflinePrompt
 } = usePWA()
+
+// Debug logging
+watch(needRefresh, (newVal) => {
+  console.log('PWA needRefresh changed:', newVal)
+})
+
+watch(offlineReady, (newVal) => {
+  console.log('PWA offlineReady changed:', newVal)
+})
+
+watch(canInstall, (newVal) => {
+  console.log('PWA canInstall changed:', newVal)
+})
+
+// Enhanced update function with logging
+const handleUpdateApp = async () => {
+  console.log('Update button clicked')
+  try {
+    await updateApp()
+  } catch (error) {
+    console.error('Update failed:', error)
+  }
+}
 </script>
 
 <style scoped>
