@@ -38,7 +38,7 @@
           </div>
           <div class="itemBox" v-if="element.type === 'folder'">
             <div class="itemTitle" :class="isSelected(element.uuid) ? 'chosen' : ''" @click="selectNode(element)">
-              <span class="handle" @click="element.open = !element.open">
+              <span class="handle" @click="toggleOpen(element)">
                 <span v-if="isSelected(element.uuid)">
                   <svg style="width: 24px; height: 24px" viewBox="0 0 24 24" v-if="!element.open">
                     <path
@@ -61,7 +61,7 @@
                 </span>
               </span>
               <div class="title">
-                {{ element.title }}
+               {{ element.title }}
               </div>
             </div>
             <button class="deleteIconButton" @click="deleteFile(index, element)" tabindex="0">
@@ -112,6 +112,10 @@ export default {
     },
   },
   methods: {
+    toggleOpen(element) {
+      element.open = !element.open
+      this.updateDatabase()
+    },
     deleteFile(index, element) {
 
 

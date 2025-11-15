@@ -99,7 +99,7 @@
             Export this folder to word</button>
 
             <div v-for="item in $root.session.writer.file.children">
-        <PageBlock  :section="item"  />
+        <PageBlock :section="item"  />
             </div>
         </div>
 

@@ -13,7 +13,7 @@
 export default {
     name: "PageBlock",
     props: {
-        section: String
+        section: Object
     },
     data() {
         return {

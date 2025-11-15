@@ -197,6 +197,11 @@ export default {
     },
     async updateDatabase() {
       //      this.$root.session.writer.selected.windowid = this.$root.windowID
+console.log(
+        "updating writer database",
+        this.$root.session.writer.selected
+      );
+
       await this.$root.UpdateRecord(
         "Writer",
         this.$root.session.writer.selected.uuid,
