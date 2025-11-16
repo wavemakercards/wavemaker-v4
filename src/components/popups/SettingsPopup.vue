@@ -97,6 +97,15 @@
           </tr>
           </tbody>
         </table>
+
+
+  <label>Choose Font</label>
+  <input list="fonts" class="wavemaker-form" v-model="this.$root.session.settings.documentprefs.font"
+    @change="handleFontChange" @input="onFontInput" placeholder="Type to search Google Fonts..." />
+  <datalist id="fonts">
+    <option v-for="font in filteredFonts" :key="font" :value="font">{{ font }}</option>
+  </datalist>
+
         <label>{{ this.$root.setlang.settings.h1align }}</label>
         <select class="wavemaker-form" v-model="this.$root.session.settings.documentprefs.h1align"
           @change="updateSettings">
@@ -138,6 +147,13 @@
           style="width:20px; height:20px" />
         <hr />
         <h2>{{ this.$root.setlang.settings.typewriter }}</h2>
+
+        <label>Distraction-Free Font</label>
+        <input list="distractionfree-fonts" class="wavemaker-form" v-model="this.$root.session.settings.documentprefs.distractionfree_font"
+          @change="handleDistractionFreeFontChange" @input="onDistractionFreeFontInput" placeholder="Type to search Google Fonts..." />
+        <datalist id="distractionfree-fonts">
+          <option v-for="font in filteredDistractionFreeFonts" :key="font" :value="font">{{ font }}</option>
+        </datalist>
 
         <table>
           <tbody>
@@ -183,17 +199,56 @@
 </template>
 
 <script>
-
+import { useFontLoader } from '@/composables/useFontLoader.js'
 
 export default {
   name: 'SettingsPopup',
+  setup() {
+    const { getFontSuggestions, loadGoogleFont, popularGoogleFonts } = useFontLoader()
+    return { getFontSuggestions, loadGoogleFont, popularGoogleFonts }
+  },
   data() {
     return {
       themes: false,
-      lang: false
+      lang: false,
+      fontQuery: '',
+      filteredFonts: [],
+      distractionFreeFontQuery: '',
+      filteredDistractionFreeFonts: []
+    }
+  },
+  computed: {
+    currentFontSuggestions() {
+      return this.getFontSuggestions(this.fontQuery)
     }
   },
   methods: {
+    onFontInput(event) {
+      this.fontQuery = event.target.value
+      this.filteredFonts = this.getFontSuggestions(this.fontQuery)
+    },
+    async handleFontChange() {
+      try {
+        await this.loadGoogleFont(this.$root.session.settings.documentprefs.font)
+        this.updateSettings()
+      } catch (error) {
+        console.warn('Font loading failed:', error)
+        this.updateSettings()
+      }
+    },
+    onDistractionFreeFontInput(event) {
+      this.distractionFreeFontQuery = event.target.value
+      this.filteredDistractionFreeFonts = this.getFontSuggestions(this.distractionFreeFontQuery)
+    },
+    async handleDistractionFreeFontChange() {
+      try {
+        await this.loadGoogleFont(this.$root.session.settings.documentprefs.distractionfree_font)
+        this.updateSettings()
+      } catch (error) {
+        console.warn('Distraction-free font loading failed:', error)
+        this.updateSettings()
+      }
+    },
     setTheme(t) {
       this.$root.theme = t;
       this.$root.switchTheme()
@@ -240,6 +295,9 @@ export default {
   },
   mounted() {
     console.log(this.$root.session.settings.documentprefs)
+    // Initialize with popular Google Fonts
+    this.filteredFonts = this.popularGoogleFonts.slice(0, 15)
+    this.filteredDistractionFreeFonts = this.popularGoogleFonts.slice(0, 15)
   }
 }
 </script>
