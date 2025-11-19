@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node bump-version.js patch",
     "build": "vite build",
+    "build:minor": "node bump-version.js minor && vite build",
+    "build:major": "node bump-version.js major && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
