@@ -105,7 +105,7 @@ export default {
     dragOptions() {
       return {
         animation: 200,
-        group: "filestystem",
+        group: "filesystem",
         disabled: false,
         ghostClass: "ghost",
       };
@@ -198,9 +198,6 @@ export default {
 .itemBox {
   padding-right: 25px;
 }
-
-
-
 
 .settingsBtn {
   height: 40px;
@@ -418,7 +415,6 @@ same as node - will nee to srot this
   border: 0px;
   width: calc(100% - 20px);
   outline: none;
-  height: 20px;
   margin: 0px;
   font-weight: normal;
 }

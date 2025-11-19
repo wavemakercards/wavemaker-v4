@@ -31,7 +31,7 @@
     "uuid": "^9.0.0",
     "vue": "^3.4.15",
     "vue-chartjs": "^4.1.2",
-    "vue-draggable-next": "^2.1.1",
+    "vue-draggable-next": "^2.3.0",
     "vue-draggable-resizable": "^3.0.0",
     "vue-sweetalert2": "^5.0.5"
   },

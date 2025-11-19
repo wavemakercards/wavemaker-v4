@@ -205,33 +205,6 @@ export default {
   fill: var(--button-hover-f);
 }
 
-.itemTitle {
-  position: relative;
-  font-weight: bold;
-  padding-left: 0px;
-  padding-right: 0px;
-  margin-bottom: 10px;
-}
-
-.itemTitle input {
-  font-family: inherit;
-  background-color: inherit;
-  color: inherit;
-  border: 0px;
-  width: calc(100% - 20px);
-  outline: none;
-  height: 20px;
-  margin: 0px;
-
-}
-
-.itemTitle input {
-  font-family: inherit;
-  background-color: inherit;
-  color: inherit;
-  border: 0px;
-  width: 100%;
-}
 
 .handle {
   position: absolute;
