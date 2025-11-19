@@ -72,9 +72,9 @@
             </button>
           </div>
 
-          <template v-if="element.open">
+          <div v-if="element.open">
             <WriterNode :list="element.children" @updateDatabase="updateDatabase" @selectNode="selectNode(element)" />
-          </template>
+          </div>
 
         </div>
       </div>
