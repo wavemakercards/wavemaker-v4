@@ -56,7 +56,21 @@ export default defineConfig({
             purpose: "maskable",
           },
         ],
-
+        file_handlers: [
+          {
+            action: './index.html',
+            accept: {
+              'application/json': ['.wm4'],
+            },
+            icons: [
+              {
+                src: './icons/192.png',
+                sizes: '192x192',
+                type: 'image/png',
+              },
+            ]
+          },
+        ],
         screenshots: [
           {
             src: "./img/screenshots/writer.png",

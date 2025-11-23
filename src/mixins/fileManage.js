@@ -4,6 +4,21 @@ const fileManage = {
     }
   },
   methods: {
+        created() {
+      if ("launchQueue" in window && "files" in window.LaunchParams.prototype) {
+          window.launchQueue.setConsumer(async (launchParams) => {
+            if (!launchParams.files.length) {
+              return;
+            }
+            this.$root.fileHandle = launchParams.files[0];
+            const file = await this.$root.fileHandle.getFile();
+            const contents = await file.text();
+            this.$root.jsonData = JSON.parse(contents);
+            await this.$root.dbImport(this.$root.jsonData);
+          });
+        }
+
+    },
     file_loadDB() {
       document.getElementById("wavemakerHiddenPicker").click();
     },
