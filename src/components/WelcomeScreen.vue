@@ -49,6 +49,8 @@
       </button>
 
 
+
+
       <div class="languages">
         <select v-model="this.$root.lang" @change="this.$root.switchLang()">
           <option v-for="(k, i) in Object.keys(this.$root.language).sort()" :key="i" :value="k">
@@ -58,7 +60,14 @@
 
         </select>
 
+
+
       </div>
+      
+      <a href="https://www.patreon.com/1984092/join" target="_blank" class="patreonBtn" title="Support Via Patreon">
+    
+        <span>💰 Support Via Patreon</span>
+      </a>
       <div>
         <label>{{ this.$root.setlang.welcome.legacy }}</label>
         <button class="interfaceBtn fullw text-left" @click="$root.v3import = true">
@@ -148,5 +157,25 @@ export default {
 
 select {
   padding: 5px
+}
+.patreonBtn{
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  display: block;
+  background-color: #FFF;
+  margin: 10px 0px 10px 0px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border:1px solid #ddd;
+  transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+  text-decoration: none;
+
+  &:hover{
+    background-color: #006d0f;
+    color: #fff;
+    font-size: 1.2em;
+
+  }
 }
 </style>

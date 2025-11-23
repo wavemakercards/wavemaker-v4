@@ -4,7 +4,7 @@
   "version": "4.1.8",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev --open",
     "prebuild": "node bump-version.js patch",
     "build": "vite build",
     "build:minor": "node bump-version.js minor && vite build",

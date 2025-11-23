@@ -3,30 +3,49 @@ const fileManage = {
     return {
     }
   },
-  methods: {
-        created() {
-      if ("launchQueue" in window && "files" in window.LaunchParams.prototype) {
-          window.launchQueue.setConsumer(async (launchParams) => {
-            if (!launchParams.files.length) {
-              return;
-            }
-            this.$root.fileHandle = launchParams.files[0];
-            const file = await this.$root.fileHandle.getFile();
-            const contents = await file.text();
-            this.$root.jsonData = JSON.parse(contents);
-            await this.$root.dbImport(this.$root.jsonData);
-          });
-        }
+  created() {
+    if ("launchQueue" in window && "files" in window.LaunchParams.prototype) {
+      console.log("PWA file launch support enabled");
 
-    },
+      window.launchQueue.setConsumer(async (launchParams) => {
+           
+        if (!launchParams.files.length) {
+          return;
+        }
+         if(confirm("You are opening a file from your device, this will replace your current project.")){
+        console.log("Launch params files:", launchParams.files);
+        this.$root.fileHandle = launchParams.files[0];
+
+        const file = await this.$root.fileHandle.getFile();
+        console.log("File loaded:", file);
+        
+        // Use FileReader just like file_load does
+        const fr = new FileReader();
+        fr.onload = async (event) => {
+          console.log("File read complete, importing...");
+          const mydata = new Blob([event.target.result], {
+            type: "text/json;charset=utf-8",
+          });
+          await this.$root.databaseImport(mydata);
+          console.log("Launch file import complete");
+          this.$root.getSettings();
+        };
+        fr.readAsText(file);
+            }else{
+      //close the window 
+      window.close();
+    }
+      });
+
+
+    }
+  },
+  methods: {
     file_loadDB() {
       document.getElementById("wavemakerHiddenPicker").click();
     },
     file_load(event) {
-      console.log(event.target.files);
-
       var fr = new FileReader();
-
       fr.onload = async (event) => {
 
         const mydata = new Blob([event.target.result], {

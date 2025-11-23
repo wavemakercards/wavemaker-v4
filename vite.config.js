@@ -24,7 +24,7 @@ export default defineConfig({
       },
       registerType: "prompt", // Prompt user for updates
       injectRegister: "auto", // Automatically inject the service worker registration
-      devOptions: { enabled: true },
+      devOptions: {enabled: true},
       manifest: {
         name: "Wavemaker Cards - Creative Writing Suite",
         short_name: "Wavemaker",
