@@ -3,9 +3,9 @@
     tag: 'div',
     type: 'transition-group',
     name: !drag ? 'flip-list' : null,
-  }" v-bind="dragOptions" @start="drag = true" @end="drag = false" item-key="order" @change="updateDatabase"
+  }" v-bind="dragOptions" @start="drag = true" @end="drag = false" item-key="uuid" @change="updateDatabase"
     :emptyInsertThreshold="30">
-    <template v-for="(element, index) in list" :key="index">
+    <template v-for="(element, index) in list" :key="element.uuid">
       <div class="childbox">
         <div class="list-group-item" tabindex="0">
           <div class="itemBox" v-if="element.type === 'file'">
