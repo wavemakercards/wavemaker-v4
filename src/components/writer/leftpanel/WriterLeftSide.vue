@@ -53,7 +53,7 @@
       <WriterNode
         :list="$root.session.writer.selected.files"
         @updateDatabase="updateDatabase"
-        :key="this.$root.session.writer.selected.lastupdated"
+      
       />
     </div>
 

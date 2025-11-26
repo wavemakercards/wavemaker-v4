@@ -5,14 +5,12 @@
     name: !drag ? 'flip-list' : null,
   }" v-bind="dragOptions" @start="drag = true" @end="drag = false" item-key="uuid" @change="updateDatabase"
     :emptyInsertThreshold="30">
-    <template v-for="(element, index) in list" :key="element.uuid">
+    <template v-for="(element, index) in list" :key="element.uuid" >
       <div class="childbox">
         <div class="list-group-item" tabindex="0">
           <div class="itemBox" v-if="element.type === 'file'">
-
             <div class="itemTitle" :class="isSelected(element.uuid) ? 'chosen' : ''" @click="selectNode(element)">
               <span class="handle">
-
                 <svg style="width: 24px; height: 24px" viewBox="0 0 24 24" v-if="isSelected(element.uuid)">
                   <path
                     d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M15,18V16H6V18H15M18,14V12H6V14H18Z" />
@@ -23,8 +21,8 @@
                     d="M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z" />
                 </svg>
               </span>
-              <div class="title">
-                <NodeTemplate :nodeElement="element" :key="element.title" />
+              <div class="title" >
+                <NodeTemplate :nodeElement="element" :key="element.uuid" />
               </div>
 
             </div>
