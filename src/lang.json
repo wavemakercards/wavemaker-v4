@@ -1526,5 +1526,196 @@
          "info": "<h1>3.0 版本转换器</h1><p>您好，这是一个旧版工具，可让您将旧的<strong>wavemaker 3.0</strong>文件加载到新版本中。</p><p> 由于后台数据库发生了很大变化，这是一个单向过程。</p><p>这将用到您的数据库文件（通过单击 wavemaker 3.0 中的 logo 转到主菜单，然后导出数据库 ) ，而后您应得到一个扩展名为“.wmdata”的文件</p><p>您需要导入每个项目并将其保存到各自的文件中，因为它们在新版本中都是独立的</p>",
          "upload": "上传 wavemaker 数据库"
       }
+   },
+   "uk": {
+      "info": {
+        "name": "Українська",
+        "textdirection": "ltr"
+      },
+      "confirm": {
+        "sure": "Ви впевнені?",
+        "downloadfile": "Це завантажить файл на ваш пристрій.",
+        "fileexport": "Так, експортувати!",
+        "filecancel": "Скасувати",
+        "exportedsuccess": "Експортовано!",
+        "exportedmessage": "Ваш файл було експортовано"
+      },
+      "toolbar": {
+        "projecthome": "Головна проєкту",
+        "writer": "Мої книги",
+        "planningboard": "Мої дошки планування",
+        "mindmap": "Мої майндмепи",
+        "snowflake": "Мої сніжинки",
+        "timeline": "Мій таймлайн",
+        "gridplanner": "Мої сітки планування",
+        "cardsdatabase": "Мої картки",
+        "settings": "Налаштування",
+        "save": "Зберегти файл",
+        "googledrive": "Google Drive",
+        "quick": "Швидке завантаження",
+        "close": "Закрити проєкт"
+      },
+      "welcome": {
+        "getstarted": "Новий проєкт",
+        "loadfile": "Завантажити файл з пристрою",
+        "loadgoogle": "Завантажити файл з Google Drive",
+        "info": "Створіть новий файл або відкрийте існуючий",
+        "legacy": "Старі інструменти",
+        "v3import": "Імпорт з Wavemaker версії 3"
+      },
+      "start": {
+        "projectlabel": "Назва проєкту",
+        "welcome": "Ласкаво просимо до Wavemaker версії 4",
+        "help": "Допомога та гіди по використанню Wavemaker"
+      },
+      "google": {
+        "info": "Увійти в Google Drive",
+        "saveinfo": "Зберегти поточний проєкт",
+        "files": "Мої файли",
+        "save": "Зберегти файл",
+        "search": "Пошук файлів",
+        "logout": "Вийти",
+        "close": "Закрити вікно"
+      },
+      "settings": {
+        "title": "Налаштування",
+        "close": "Закрити цей файл",
+        "themes": "Обрати тему",
+        "lang": "Обрати мову",
+        "clear": "Це очистить проєкт",
+        "docprefs": "Налаштування документа",
+        "alignment": "Вирівнювання",
+        "alignL": "По лівому краю",
+        "alignR": "По правому краю",
+        "alignC": "По центру",
+        "alignJ": "По ширині",
+        "fontsize": "Розмір шрифту",
+        "fontsize1": "Найменший",
+        "fontsize2": "Малий",
+        "fontsize3": "Стандартний",
+        "fontsize4": "Великий",
+        "fontsize5": "Найбільший",
+        "lineheight": "Міжрядковий інтервал",
+        "lineheight1": "Стандартний",
+        "lineheight2": "Подвійний",
+        "lineheight3": "2.5 інтервал",
+        "lineheight4": "Потрійний",
+        "paragraph": "Відступ абзацу",
+        "paragraphyes": "Так",
+        "paragraphno": "Ні",
+        "paragraphspacing": "Інтервал між абзацами",
+        "paragraphspacing1": "Стандартний",
+        "paragraphspacing2": "1.5x",
+        "paragraphspacing3": "2x",
+        "paragraphspacing4": "2.5x",
+        "paragraphspacing5": "5x",
+        "pagewidth": "Ширина сторінки",
+        "pagestyle": "Стиль сторінки",
+        "fullwidth": "На всю ширину",
+        "pagetext": "Колір тексту",
+        "pagecolour": "Колір сторінки",
+        "h1align": "Вирівнювання H1",
+        "h2align": "Вирівнювання H2",
+        "h3align": "Вирівнювання H3",
+        "h4align": "Вирівнювання H4",
+        "typewriter": "Налаштування друкарської машинки",
+        "typetext": "Колір тексту",
+        "typepage": "Колір сторінки",
+        "typesound": "Звук друку",
+        "caretfocus": "Автофокус курсора",
+        "reset": "Скинути до стандартних"
+      },
+      "tools": {
+        "writer": "Мої книги",
+        "planningboard": "Мої дошки планування",
+        "mindmap": "Мої майндмепи",
+        "snowflake": "Мої сніжинки",
+        "timeline": "Мій таймлайн",
+        "gridplanner": "Мої сітки планування",
+        "cardsdatabase": "Мої картки",
+        "name": "Назва",
+        "description": "Опис (необов’язково)",
+        "warn": "Будь ласка, вкажіть назву"
+      },
+      "writer": {
+        "settings": "Назва книги",
+        "newfile": "Новий розділ",
+        "newfolder": "Нова папка",
+        "deletewarn": "Видалити цей елемент? Картки залишаться в базі",
+        "intro": "Це головна сторінка документа.",
+        "docdownload": "Експортувати як .doc",
+        "words": "Слова"
+      },
+      "confirmmodal": {
+        "confirmdelete": "Ви впевнені, що хочете видалити?",
+        "noundo": "Цю дію не можна скасувати.",
+        "confirmbtn": "Так, видалити!",
+        "cancelbtn": "Скасувати",
+        "success": "Видалено!",
+        "successfeedback": "Було видалено.",
+        "confirmexport": "Експортувати?",
+        "exportmsg": "Експортувати цей інструмент?",
+        "exportconfirmbtn": "Так, експортувати.",
+        "exportsuccess": "Експортовано",
+        "exportsuccessfeedback": "Успішно експортовано",
+        "snowconfirm": "Замінити картку",
+        "snowconfirmtext": "Замінити картку трьома новими",
+        "snowconfirmbtn": "Так, замінити!",
+        "snowconfirmsuccess": "Замінено",
+        "snowconfirmmsg": "Картку замінено"
+      },
+      "editor": {
+        "bold": "Жирний",
+        "italic": "Курсив",
+        "strikethrough": "Закреслений",
+        "paragraph": "Абзац",
+        "h1": "Заголовок 1",
+        "h2": "Заголовок 2",
+        "pic": "Вставити зображення",
+        "blist": "Маркерований список",
+        "nlist": "Нумерований список",
+        "planningboard": "Перейти до планування",
+        "typewriter": "Режим друкарської машинки",
+        "hilight": "Підсвітка тексту",
+        "wordcount": "Показати/сховати лічильник слів"
+      },
+      "mindmap": {
+        "deletenodewarn": "Видалити цей вузол?"
+      },
+      "snowflake": {
+        "title": "Назва",
+        "deletewarn": "Видалити цю картку?",
+        "replacewarn": "Це замінить картку трьома новими."
+      },
+      "timeline": {
+        "date": "Дата/Час",
+        "title": "Назва"
+      },
+      "gridplanner": {
+        "newrow": "Новий рядок",
+        "newcol": "Нова колонка"
+      },
+      "db": {
+        "search": "Пошук за ключовими словами",
+        "clear": "Очистити теги",
+        "deletecolwarn": "Видалити колонку?",
+        "deleterowwarn": "Видалити рядок?"
+      },
+      "cards": {
+        "createnewbtn": "Створити нову",
+        "linkexisting": "Прив’язати існуючу картку",
+        "cardtitle": "Назва картки",
+        "cardnotes": "Нотатки",
+        "cardtags": "Теги",
+        "moredetail": "Детальніше",
+        "images": "Зображення",
+        "openimagemanager": "Відкрити менеджер зображень",
+        "close": "Закрити"
+      },
+      "wm3import": {
+        "close": "Закрити",
+        "info": "<h1>Конвертер версії 3</h1><p>Імпорт старих файлів Wavemaker 3.</p>",
+        "upload": "Завантажити базу Wavemaker"
+      }
    }
 }
