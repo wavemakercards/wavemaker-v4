@@ -14,19 +14,26 @@ const GoogleDriveApi = {
                 CURRENT_FILE_OBJ: null,
                 CURRENT_FILE_NAME: "",
                 CURRENT_FILE_CONTENTS: "",
-                loading: false
+                loading: false,
+                searching: false,
+                error: null
             }
         }
     },
     methods: {
         async GoogleDriveInitializeGapi() {
-            //console.log("GoogleDriveInitializeGapi")
-            await window.gapi.client.init({
-                apiKey: this.GoogleDriveApi.API_KEY,
-                discoveryDocs: [this.GoogleDriveApi.DISCOVERY_DOC],
-            });
-            this.GoogleDriveApi.gapiInited = true;
-            this.GoogleDriveCheckAuthStatus();
+            try {
+                await window.gapi.client.init({
+                    apiKey: this.GoogleDriveApi.API_KEY,
+                    discoveryDocs: [this.GoogleDriveApi.DISCOVERY_DOC],
+                });
+                this.GoogleDriveApi.gapiInited = true;
+                this.GoogleDriveApi.error = null;
+                this.GoogleDriveCheckAuthStatus();
+            } catch (error) {
+                this.GoogleDriveApi.error = "Google Drive could not be initialized.";
+                console.error("Google Drive initialization failed:", error);
+            }
         },
         async GoogleDrivegisLoaded() {
             //console.log("GoogleDrivegisLoaded")
@@ -48,25 +55,23 @@ const GoogleDriveApi = {
          *  Sign in the user upon button click.
          */
         async GoogleDriveAuthStart() {
-            //console.log("GoogleDriveAuthStart")
             this.GoogleDriveApi.tokenClient.callback = (resp) => {
-                //console.log("GoogleDriveAuthStart", "callback", resp)
-                if (resp.error !== undefined) {
-                    throw (resp);
+                if (resp.error) {
+                    this.GoogleDriveApi.loggedin = false;
+                    this.GoogleDriveApi.error = "Google Drive sign-in was not completed.";
+                    console.error("Google Drive authentication failed:", resp);
+                    return;
                 }
-                //  document.getElementById('authorize_button').innerText = 'Refresh';
                 this.GoogleDriveApi.loggedin = true
                 this.GoogleDriveListFiles()
             };
 
-            if (window.gapi.client.getToken() === null) {
-                // Prompt the user to select a Google Account and ask for consent to share their data
-                // when establishing a new session.
-                this.GoogleDriveApi.tokenClient.requestAccessToken({ prompt: 'consent' });
-            } else {
-                // Skip display of account chooser and consent dialog for an existing session.
-                this.GoogleDriveApi.tokenClient.requestAccessToken({ prompt: '' });
-                
+            try {
+                const prompt = window.gapi.client.getToken() === null ? 'consent' : '';
+                this.GoogleDriveApi.tokenClient.requestAccessToken({ prompt });
+            } catch (error) {
+                this.GoogleDriveApi.error = "Google Drive sign-in failed.";
+                console.error("Google Drive sign-in failed:", error);
             }
         },
         /**
@@ -76,127 +81,121 @@ const GoogleDriveApi = {
             const token = window.gapi.client.getToken();
             if (token !== null) {
                 window.google.accounts.oauth2.revoke(token.access_token);
-                window.gapi.client.setToken('');
-                this.GoogleDriveApi.loggedin = false
-                this.$root.$data.popup.name = null
             }
-
+            window.gapi.client.setToken('');
+            this.GoogleDriveApi.loggedin = false
+            this.GoogleDriveApi.files = []
+            this.GoogleDriveApi.CURRENT_FILE_OBJ = null
+            this.GoogleDriveApi.error = null
+            this.$root.$data.popup.name = null
         },
         async GoogleDriveListFiles() {
             this.GoogleDriveApi.searching = true
-            //console.log("GoogleDriveListFiles")
-            let response;
+            this.GoogleDriveApi.error = null
             try {
-                response = await window.gapi.client.drive.files.list({
-                    'pageSize': 10,
-                    'fields': 'files(id, name, size,  modifiedTime)',
-                    'q': "name contains '.wm4'"
+                const response = await window.gapi.client.drive.files.list({
+                    pageSize: 100,
+                    orderBy: 'modifiedTime desc',
+                    fields: 'nextPageToken, files(id, name, size, modifiedTime)',
+                    q: "name contains '.wm4' and trashed = false"
                 });
+                this.GoogleDriveApi.files = response.result.files || []
+                this.GoogleDriveApi.nextPageToken = response.result.nextPageToken || null
             } catch (err) {
-                //console.log(err.message);
-                return;
+                this.GoogleDriveApi.files = []
+                this.GoogleDriveApi.error = "Google Drive files could not be loaded."
+                console.error("Google Drive file listing failed:", err)
+            } finally {
+                this.GoogleDriveApi.searching = false
             }
-            const files = response.result.files;
-            if (!files || files.length == 0) {
-                //console.log('No files found.');
-                return;
-            }
-            this.GoogleDriveApi.files = files
-            this.GoogleDriveApi.searching = false
-            // Flatten to string to display
-            /*         const output = files.reduce(
-                        (str, file) => `${str}${file.name} (${file.id}\n`,
-                        'Files:\n');
-                    console.log(output); */
-        }
-        ,
-        GoogleDriveReadFile() {
-            //console.log("Reading File");
-            var request = window.gapi.client.drive.files.get({
-                fileId: this.GoogleDriveApi.CURRENT_FILE_OBJ.id,
-                alt: 'media'
-            })
-            request.then(async (response) => {
-                // this.CURRENT_FILE_OBJ = response;
-                //console.log(response.body)
+        },
+        async GoogleDriveReadFile(fileObj = this.GoogleDriveApi.CURRENT_FILE_OBJ) {
+            if (!fileObj) return false
+
+            try {
+                const response = await window.gapi.client.drive.files.get({
+                    fileId: fileObj.id,
+                    alt: 'media'
+                })
                 const mydata = new Blob([response.body], {
-                    type: "text/json;charset=utf-8",
+                    type: "application/json",
                 });
                 await this.$root.databaseImport(mydata)
-                this.$root.getSettings()
-
-            }, function (error) {
-                console.error(error)
+                await this.$root.getSettings()
+                this.GoogleDriveApi.CURRENT_FILE_OBJ = fileObj
+                this.GoogleDriveApi.CURRENT_FILE_NAME = fileObj.name
+                this.GoogleDriveApi.error = null
+                this.$root.$data.popup.name = null
+                return true
+            } catch (error) {
+                this.GoogleDriveApi.error = "The Google Drive file could not be opened."
+                console.error("Google Drive file read failed:", error)
+                return false
+            }
+        },
+        async GoogleDriveFindFile(name) {
+            const escapedName = name.replace(/\\/g, "\\\\").replace(/'/g, "\\'")
+            const response = await window.gapi.client.drive.files.list({
+                pageSize: 10,
+                orderBy: 'modifiedTime desc',
+                fields: 'files(id, name, size, modifiedTime)',
+                q: `name = '${escapedName}' and trashed = false`
             })
-            //console.log("Got" , CURRENT_FILE_OBJ);
-            this.$root.$data.popup.name = null
-            return request; //for batch request
+            return response.result.files?.[0] || null
         },
         async GoogleDriveWriteFile(callback) {
             this.GoogleDriveApi.loading = true;
-            this.GoogleDriveApi.CURRENT_FILE_NAME = this.$root.session.settings.ProjectName
-            let blob = await this.$root.databaseExport()
-            //console.log("blob", blob)
-            let CURRENT_FILE_CONTENTS = await blob.text()
-            //console.log("CURRENT_FILE_CONTENTS", CURRENT_FILE_CONTENTS)
-            var filePath = "";
-            //console.log(this.GoogleDriveApi.CURRENT_FILE_OBJ);
-            if (this.GoogleDriveApi.CURRENT_FILE_OBJ) {
-                filePath = this.GoogleDriveApi.CURRENT_FILE_OBJ.id;
-
-            }
-            const boundary = '-------314159265358979323846';
-            const delimiter = "\r\n--" + boundary + "\r\n";
-            const close_delim = "\r\n--" + boundary + "--";
-            const contentType = 'application/json';
-            var metadata = { 'name': this.GoogleDriveApi.CURRENT_FILE_NAME + '.wm4', 'mimeType': contentType };
-            var multipartRequestBody = delimiter + 'Content-Type: application/json\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: ' + contentType + '\r\n\r\n' + CURRENT_FILE_CONTENTS + close_delim;
-            var request
-            if (filePath == "") {
-                //console.log("newfile")
-                request = window.gapi.client.request({
-                    'path': '/upload/drive/v3/files',
-                    'method': 'POST',
-                    'params': {
-                        'uploadType': 'multipart'
-                    },
-                    'headers': {
-                        'Content-Type': 'multipart/related; boundary="' + boundary + '"'
-                    },
-                    'body': multipartRequestBody
+            try {
+                this.GoogleDriveApi.CURRENT_FILE_NAME = this.$root.session.settings.ProjectName
+                const blob = await this.$root.databaseExport()
+                const currentFileContents = await blob.text()
+                let existingFile = this.GoogleDriveApi.CURRENT_FILE_OBJ
+                if (!existingFile) {
+                    existingFile = await this.GoogleDriveFindFile(`${this.GoogleDriveApi.CURRENT_FILE_NAME}.wm4`)
+                    if (existingFile) this.GoogleDriveApi.CURRENT_FILE_OBJ = existingFile
+                }
+                const filePath = existingFile?.id || ""
+                const boundary = '-------314159265358979323846';
+                const delimiter = "\r\n--" + boundary + "\r\n";
+                const closeDelim = "\r\n--" + boundary + "--";
+                const contentType = 'application/json';
+                const metadata = { name: this.GoogleDriveApi.CURRENT_FILE_NAME + '.wm4', mimeType: contentType };
+                const multipartRequestBody = delimiter + 'Content-Type: application/json\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: ' + contentType + '\r\n\r\n' + currentFileContents + closeDelim;
+                const request = window.gapi.client.request({
+                    path: filePath ? '/upload/drive/v3/files/' + filePath : '/upload/drive/v3/files',
+                    method: filePath ? 'PATCH' : 'POST',
+                    params: { uploadType: 'multipart' },
+                    headers: { 'Content-Type': 'multipart/related; boundary="' + boundary + '"' },
+                    body: multipartRequestBody
                 });
-            } else {
-                request = window.gapi.client.request({
-                    'path': '/upload/drive/v3/files/' + filePath,
-                    'method': 'PATCH',
-                    'params': {
-                        'uploadType': 'multipart'
-                    },
-                    'headers': {
-                        'Content-Type': 'multipart/related; boundary="' + boundary + '"'
-                    },
-                    'body': multipartRequestBody
-                });
+                const file = await new Promise((resolve, reject) => {
+                    request.execute((response) => response?.error ? reject(response.error) : resolve(response.result || response))
+                })
+                this.GoogleDriveApi.CURRENT_FILE_OBJ = file
+                this.GoogleDriveApi.error = null
+                this.GoogleDriveListFiles()
+                if (callback) callback(file)
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Uploaded to Google Drive',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                })
+                this.$root.$data.popup.name = null
+            } catch (error) {
+                this.GoogleDriveApi.error = "The project could not be saved to Google Drive."
+                console.error("Google Drive file write failed:", error)
+            } finally {
+                this.GoogleDriveApi.loading = false
             }
-
-
-            if (!callback) {
-                callback = (file) => {
-                    if (this.GoogleDriveApi.CURRENT_FILE_OBJ) {
-                        //console.log("Data Saved to GDrive", this.GoogleDriveApi.CURRENT_FILE_OBJ);
-                    } else {
-                        //console.log("Data Created on GDrive");
-                    }
-                    this.GoogleDriveApi.CURRENT_FILE_OBJ = file;
-                    this.GoogleDriveApi.loading = false;
-                    this.$root.$data.popup.name = null
-                };
-            }
-            request.execute(callback);
         },
 
         GoogleDriveSignIn() {
-            window.gapi.load('client', this.GoogleDriveInitializeGapi);
+            this.GoogleDriveApi.error = null
+            window.gapi.load('client', () => this.GoogleDriveInitializeGapi());
             this.GoogleDrivegisLoaded()
         }
     },

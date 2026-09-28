@@ -43,6 +43,7 @@ const dexieDB = {
     async getSettings(uuid) {
       if (!uuid) {
         let arr = await this.$root.db.Settings.toArray()
+        if (!arr.length) return
         uuid = arr[0].uuid
       }
 
