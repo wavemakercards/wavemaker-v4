@@ -4,6 +4,9 @@ import vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   base: "",
+  server: {
+    port: 3000,
+  },
   build: {
     outDir: 'docs',
     rollupOptions: {
