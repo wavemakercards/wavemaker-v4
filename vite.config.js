@@ -4,6 +4,9 @@ import vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig({
   base: "",
+  server: {
+    port: 3000,
+  },
   build: {
     outDir: 'docs',
     rollupOptions: {
@@ -64,7 +67,7 @@ export default defineConfig({
             },
             icons: [
               {
-                src: './icons/192.png',
+                src: './img/icons/android-chrome-192x192.png',
                 sizes: '192x192',
                 type: 'image/png',
               },

@@ -312,7 +312,7 @@ export default {
   async mounted() {
     // see if we are alreay running a project
     let settingsCheck = await this.$root.db.Settings.toArray()
-    if (settingsCheck) {
+    if (settingsCheck.length) {
       this.$root.session.settings = settingsCheck[0]
     }
     if (localStorage.getItem("wmTheme")) {
@@ -342,7 +342,7 @@ export default {
   created() {
     window.addEventListener("resize", this.screensizefixes);
   },
-  unmount() {
+  unmounted() {
     window.removeEventListener("resize", this.screensizefixes);
   }
 }

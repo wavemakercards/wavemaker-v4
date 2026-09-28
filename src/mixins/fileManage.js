@@ -18,19 +18,7 @@ const fileManage = {
 
         const file = await this.$root.fileHandle.getFile();
         console.log("File loaded:", file);
-        
-        // Use FileReader just like file_load does
-        const fr = new FileReader();
-        fr.onload = async (event) => {
-          console.log("File read complete, importing...");
-          const mydata = new Blob([event.target.result], {
-            type: "text/json;charset=utf-8",
-          });
-          await this.$root.databaseImport(mydata);
-          console.log("Launch file import complete");
-          this.$root.getSettings();
-        };
-        fr.readAsText(file);
+        await this.importDatabaseFile(file);
             }else{
       //close the window 
       window.close();
@@ -44,23 +32,29 @@ const fileManage = {
     file_loadDB() {
       document.getElementById("wavemakerHiddenPicker").click();
     },
-    file_load(event) {
-      var fr = new FileReader();
-      fr.onload = async (event) => {
+    async file_load(event) {
+      const file = event.target.files.item(0)
+      if (!file) return
 
-        const mydata = new Blob([event.target.result], {
-          type: "text/json;charset=utf-8",
-        });
+      try {
+        await this.importDatabaseFile(file)
+      } finally {
+        event.target.value = ""
+      }
+    },
+
+    async importDatabaseFile(file) {
+      try {
+        const mydata = new Blob([await file.text()], {
+          type: "application/json",
+        })
         await this.$root.databaseImport(mydata)
         console.log("import complete")
-        this.$root.getSettings()
-        //this.$root.databaseImport(mydata)
-        //  this.$root.DBimport(JSON.parse(event.target.result));
-      };
-
-      fr.readAsText(event.target.files.item(0));
-
-
+        await this.$root.getSettings()
+      } catch (error) {
+        console.error("Database import failed:", error)
+        this.$swal("Import failed", "This file could not be imported as a Wavemaker project.", "error")
+      }
     },
 
     async file_downloadDB() {
@@ -127,15 +121,6 @@ const fileManage = {
 
 
     }
-  },
-  mounted() {
-    let hiddenInput = document.createElement("input")
-    hiddenInput.type = "file"
-    hiddenInput.id = "wavemakerHiddenPicker"
-    hiddenInput.accept = ".wm4"
-    hiddenInput.style = "display:none"
-    document.body.appendChild(hiddenInput)
-
   }
 }
 export default fileManage

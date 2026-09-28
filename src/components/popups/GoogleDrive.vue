@@ -1,187 +1,336 @@
 <template>
-  <button @click="$root.GoogleDriveSignIn()" v-if="!$root.GoogleDriveApi.loggedin" class="interfaceBtn GoogleDrive">
-    <svg viewBox="0 0 24 24">
-      <path
-        d="M7.71,3.5L1.15,15L4.58,21L11.13,9.5M9.73,15L6.3,21H19.42L22.85,15M22.28,14L15.42,2H8.58L8.57,2L15.43,14H22.28Z" />
-    </svg>
+  <p v-if="$root.GoogleDriveApi.error" class="drive-error" role="alert">
+    {{ $root.GoogleDriveApi.error }}
+  </p>
 
+  <button v-if="!$root.GoogleDriveApi.loggedin" @click="$root.GoogleDriveSignIn()"
+    class="interfaceBtn GoogleDrive">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7.71 3.5 1.15 15l3.43 6 6.55-11.5M9.73 15 6.3 21h13.12l3.43-6M22.28 14 15.42 2H8.58l6.85 12Z" />
+    </svg>
     {{ this.$root.setlang.google.info }}
   </button>
 
-  <div v-if="$root.GoogleDriveApi.loggedin" style="text-align:left">
-
-
-    <div v-if="$root.session.settings">
-      <h3>{{ this.$root.setlang.google.saveinfo }}</h3>
-      <h4>{{ this.$root.session.settings.ProjectName }}</h4>
-      <button @click="$root.GoogleDriveWriteFile()" class="interfaceBtn">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M13 19C13 19.34 13.04 19.67 13.09 20H6.5C5 20 3.69 19.5 2.61 18.43C1.54 17.38 1 16.09 1 14.58C1 13.28 1.39 12.12 2.17 11.1S4 9.43 5.25 9.15C5.67 7.62 6.5 6.38 7.75 5.43S10.42 4 12 4C13.95 4 15.6 4.68 16.96 6.04C18.32 7.4 19 9.05 19 11C20.15 11.13 21.1 11.63 21.86 12.5C22.37 13.07 22.7 13.71 22.86 14.42C21.82 13.54 20.5 13 19 13C15.69 13 13 15.69 13 19M16 18H18V22H20V18H22L19 15L16 18Z" />
-        </svg>
-        {{ this.$root.setlang.google.save }}</button>
-    </div>
-
-
-
-
-
-
-
-
-    <h3>{{ this.$root.setlang.google.files }}</h3>
-    <div>
-      <button @click="$root.GoogleDriveApi.files = []; $root.GoogleDriveListFiles();" class="interfaceBtn filebutton"
-        style="width:auto;">
-        <svg style="width:24px;height:24px" viewBox="0 0 24 24" v-if="!$root.GoogleDriveApi.searching">>
-          <path
-            d="M18 14.5C19.11 14.5 20.11 14.95 20.83 15.67L22 14.5V18.5H18L19.77 16.73C19.32 16.28 18.69 16 18 16C16.62 16 15.5 17.12 15.5 18.5C15.5 19.88 16.62 21 18 21C18.82 21 19.54 20.61 20 20H21.71C21.12 21.47 19.68 22.5 18 22.5C15.79 22.5 14 20.71 14 18.5C14 16.29 15.79 14.5 18 14.5M10 4L12 6H20C21.1 6 22 6.89 22 8V13C21 12.38 19.79 12 18.5 12C14.91 12 12 14.91 12 18.5C12 19 12.06 19.5 12.17 20H4C2.89 20 2 19.1 2 18L2 6C2 4.89 2.89 4 4 4H10Z" />
-        </svg>
-
-        <svg version="1.1" viewBox="0 0 100 100" width="24px" height="24px" v-if="$root.GoogleDriveApi.searching">
-          <path d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
-            <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50"
-              to="360 50 50" repeatCount="indefinite" />
-          </path>
-        </svg>
-
-
-        {{ this.$root.setlang.google.search }}
-      </button>
-    </div>
-
-
-    <div v-if="$root.GoogleDriveApi.files.length">
-      <div v-for="(f, i) in $root.GoogleDriveApi.files" :key="i">
-        <button @click="openFile(f)" class="file">
-          <svg viewBox="0 0 24 24">
-            <defs id="defs8" />
-            <path id="path2"
-              d="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z" />
-            <path id="path3731" d="m 11.084747,9.8305089 h 7.186439 V 17.01695 h -7.186439 z"
-              style="fill: none; stroke-width: 0.29943502" />
-            <path id="path3733"
-              d="m 17.021865,11.84974 -1.7835,-1.787036 c -0.308989,-0.3095941 -0.810692,-0.3095941 -1.119667,0 l -1.777381,1.783961 c -0.104021,0.104223 -0.104021,0.269733 0,0.373956 l 0.538408,0.539479 0.357918,0.334109 c 0.107067,0.09809 0.269211,0.09809 0.376277,0 l 0.718911,-0.665156 c 0.198848,-0.183903 0.501704,-0.183903 0.697492,0 l 0.71891,0.665156 c 0.107081,0.09809 0.269212,0.09809 0.376292,0 l 0.357932,-0.334109 0.538408,-0.536404 c 0.100961,-0.101162 0.100961,-0.269733 0,-0.373956 z"
-              style="stroke-width: 0.0139114" />
-            <path id="path3735"
-              d="m 11.325657,13.986203 2.793041,2.798572 c 0.308975,0.309566 0.810678,0.309566 1.119667,0 l 2.79304,-2.798572 c 0.483359,-0.4843 0.143785,-0.62837 -0.211087,-0.965553 l -0.437475,-0.416863 c -0.103993,-0.101148 -0.269211,-0.09807 -0.376277,0 l -0.718897,0.665156 c -0.198876,0.183917 -0.501703,0.183917 -0.697506,0 l -0.71891,-0.665156 c -0.106323,-0.09807 -0.269954,-0.09807 -0.376292,0 l -0.71891,0.665156 c -0.198848,0.183917 -0.501704,0.183917 -0.697492,0 l -0.718911,-0.665156 c -0.106336,-0.09807 -0.269955,-0.09807 -0.376292,0 l -0.403815,0.373969 c -0.37013,0.343305 -0.758647,0.499618 -0.253884,1.008447 z"
-              style="stroke-width: 0.0139114" />
+  <div v-else class="drive-panel">
+    <section v-if="$root.session.settings" class="drive-save-panel">
+      <div class="drive-section-heading">
+        <div>
+          <span class="drive-eyebrow">Google Drive</span>
+          <h3>{{ this.$root.setlang.google.saveinfo }}</h3>
+          <p>{{ this.$root.session.settings.ProjectName }}</p>
+        </div>
+        <button @click="$root.GoogleDriveWriteFile()" class="interfaceBtn drive-save-button"
+          :disabled="$root.GoogleDriveApi.loading">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M13 19c0 .34.04.67.09 1H6.5C5 20 3.69 19.5 2.61 18.43 1.54 17.38 1 16.09 1 14.58c0-1.3.39-2.46 1.17-3.48S4 9.43 5.25 9.15C5.67 7.62 6.5 6.38 7.75 5.43S10.42 4 12 4c1.95 0 3.6.68 4.96 2.04S19 9.05 19 11c1.15.13 2.1.63 2.86 1.5.51.57.84 1.21 1 1.92C21.82 13.54 20.5 13 19 13c-3.31 0-6 2.69-6 6Zm3-1h2v4h2v-4h2l-3-3-3 3Z" />
           </svg>
+          {{ this.$root.setlang.google.save }}
+        </button>
+      </div>
+    </section>
 
-          <div> <strong>{{ f.name }}</strong> <span class="smalltext">({{ f.size + "bytes" }})</span></div>
-          <div class="smalltext"> {{ f.modifiedTime }}</div>
+    <section class="drive-files-panel">
+      <div class="drive-section-heading drive-files-heading">
+        <div>
+          <span class="drive-eyebrow">Cloud files</span>
+          <h3>{{ this.$root.setlang.google.files }}</h3>
+        </div>
+        <button @click="$root.GoogleDriveApi.files = []; $root.GoogleDriveListFiles();"
+          class="drive-refresh" aria-label="Refresh files" title="Refresh files"
+          :disabled="$root.GoogleDriveApi.searching">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 14.5c1.11 0 2.11.45 2.83 1.17L22 14.5v4h-4l1.77-1.77A2.5 2.5 0 1 0 18 21c.82 0 1.54-.39 2-1h1.71a4.5 4.5 0 1 1-3.71-6.5ZM10 4l2 2h8c1.1 0 2 .9 2 2v5c-1-.62-2.21-1-3.5-1A6.5 6.5 0 0 0 12 18.5c0 .5.06 1 .17 1.5H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h6Z" />
+          </svg>
         </button>
       </div>
 
-    </div>
+      <div v-if="$root.GoogleDriveApi.searching" class="drive-loading" role="status">
+        Loading files...
+      </div>
+      <div v-else-if="$root.GoogleDriveApi.files.length" class="drive-file-list">
+        <div v-for="(f, i) in $root.GoogleDriveApi.files" :key="f.id || i">
+          <button @click="openFile(f)" class="file">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2Zm0 12H4V8h16v10Z" />
+            </svg>
+            <span class="file-copy">
+              <strong>{{ f.name }}</strong>
+              <span class="smalltext">{{ formatFileSize(f.size) }} · {{ formatDate(f.modifiedTime) }}</span>
+            </span>
+          </button>
+        </div>
+      </div>
+      <p v-else class="drive-empty">No Wavemaker files found in Google Drive.</p>
+    </section>
 
-    <div>
-      <hr />
-      <button @click="$root.GoogleDriveSignOut" class="interfaceBtn filebutton"
-        style="width: auto; display:inline-block">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M10 4A4 4 0 0 0 6 8A4 4 0 0 0 10 12A4 4 0 0 0 14 8A4 4 0 0 0 10 4M17.5 13C15 13 13 15 13 17.5C13 20 15 22 17.5 22C20 22 22 20 22 17.5C22 15 20 13 17.5 13M10 14C5.58 14 2 15.79 2 18V20H11.5A6.5 6.5 0 0 1 11 17.5A6.5 6.5 0 0 1 11.95 14.14C11.32 14.06 10.68 14 10 14M17.5 14.5C19.16 14.5 20.5 15.84 20.5 17.5C20.5 18.06 20.35 18.58 20.08 19L16 14.92C16.42 14.65 16.94 14.5 17.5 14.5M14.92 16L19 20.08C18.58 20.35 18.06 20.5 17.5 20.5C15.84 20.5 14.5 19.16 14.5 17.5C14.5 16.94 14.65 16.42 14.92 16Z" />
+    <footer class="drive-footer">
+      <button @click="$root.GoogleDriveSignOut" class="drive-account-button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 10c-4.42 0-8 1.79-8 4v2h9.5a6.5 6.5 0 0 1 .45-5.86A12.8 12.8 0 0 0 10 14Zm7.5-1A4.5 4.5 0 1 0 22 17.5a4.5 4.5 0 0 0-4.5-4.5Zm0 7a2.5 2.5 0 1 1 2.5-2.5 2.5 2.5 0 0 1-2.5 2.5Z" />
         </svg>
         {{ this.$root.setlang.google.logout }}
       </button>
-
-
-      <button class="interfaceBtn filebutton logout" @click="$root.popup.name = null">
-        <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-          <path
-            d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M14.59,8L12,10.59L9.41,8L8,9.41L10.59,12L8,14.59L9.41,16L12,13.41L14.59,16L16,14.59L13.41,12L16,9.41L14.59,8Z" />
+      <button class="drive-close-button" @click="$root.popup.name = null">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m14.59 8-2.59 2.59L9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8Z" />
         </svg>
         {{ this.$root.setlang.google.close }}
       </button>
-    </div>
-
-
-
-
+    </footer>
   </div>
-
 </template>
 
 <script>
 export default {
   name: "GoogleDrive",
-  props: {
-    msg: String,
-  },
-  data() {
-    return {
-      tab: "load",
-      searching: false
-    }
-  },
   methods: {
-    loggy(l) {
-      console.log(l)
+    async openFile(file) {
+      if (!confirm("Opening this file will replace the current project. Continue?")) return
+      await this.$root.GoogleDriveReadFile(file)
     },
-    openFile(f) {
-      this.$root.GoogleDriveApi.CURRENT_FILE_OBJ = f;
-      this.$root.GoogleDriveApi.CURRENT_FILE_NAME = f.name;
-      this.$root.GoogleDriveReadFile();
-      this.$root.popup.name = null
+    formatFileSize(size) {
+      if (!size) return "Size unavailable"
+      const bytes = Number(size)
+      if (bytes < 1024) return `${bytes} B`
+      if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
     },
+    formatDate(timestamp) {
+      if (!timestamp) return "Date unavailable"
+      return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(timestamp))
+    }
   },
   async mounted() {
-    if(!this.$root.GoogleDriveApi.loggedin){
-    await this.$root.GoogleDriveSignIn()
-    }
+    if (!this.$root.GoogleDriveApi.loggedin) await this.$root.GoogleDriveSignIn()
   }
-};
+}
 </script>
 
 <style scoped>
 .GoogleDrive {
-  width: auto;
-  margin: 0 auto;
+  width: 100%;
+  margin: 8px 0 0;
 }
 
+.drive-panel {
+  --drive-border: color-mix(in srgb, currentColor 14%, transparent);
+  text-align: left;
+  color:#000;
+}
 
+.drive-save-panel,
+.drive-files-panel {
+    border-radius: 6px;
+  padding: 18px;
+  border: 1px solid var(--drive-border);
+  background: color-mix(in srgb, var(--paper) 70%, transparent);
+}
+
+.drive-save-panel {
+  border-top: 3px solid var(--primary);
+  margin-bottom: 18px;
+}
+
+.drive-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.drive-section-heading h3 {
+  margin: 3px 0 0;
+  font-size: 1.25rem;
+}
+
+.drive-section-heading p {
+  margin: 5px 0 0;
+  opacity: 0.72;
+}
+
+.drive-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.drive-save-button {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+
+.drive-save-button:disabled,
+.drive-refresh:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.drive-files-heading {
+  margin-bottom: 14px;
+}
+
+.drive-refresh {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--drive-border);
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  fill: currentColor;
+  cursor: pointer;
+}
+
+.drive-refresh svg {
+  width: 30px;
+  height: 30px;
+}
+
+.drive-refresh:hover,
+.drive-refresh:focus-visible {
+  background: var(--button-hover);
+  color: var(--button-hover-f);
+}
+
+.drive-loading,
+.drive-empty {
+  padding: 24px 0 10px;
+  text-align: center;
+  opacity: 0.65;
+}
+
+.drive-file-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
 
 .file {
   position: relative;
-  text-align: left;
-  margin:2px;
-  border-radius: 10px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
   width: 100%;
-  background-color: var(--paper);
+  margin: 0;
+  padding: 52px 16px 16px;
+  border: 1px solid var(--drive-border);
+  border-radius: 6px;
+  background: var(--paper);
   color: var(--paper-f);
   fill: var(--paper-f);
-  min-height: 70px;
-  padding-left: 40px;
+  text-align: left;
   cursor: pointer;
-  vertical-align: top;
 }
-.file strong{
-  font-size: 1.4rem;
+
+.file strong {
+  display: block;
+  overflow: hidden;
+  font-size: 1.05rem;
   font-weight: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.file svg{
+
+.file-copy {
+  min-width: 0;
+}
+
+.file svg {
   position: absolute;
-  width: 24px;
-  height: 24px;
-  left:10px;
-  top:14px
+  top: 16px;
+  left: 16px;
+  width: 30px;
+  height: 30px;
 }
+
 .file:hover,
-.file:focus,
-.file:active {
-  background-color: var(--button-hover);
+.file:focus-visible {
+  background: var(--button-hover);
   color: var(--button-hover-f);
   fill: var(--button-hover-f);
 }
 
-.logout {
-  width: auto;
-  float: right;
+.smalltext {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  opacity: 0.65;
 }
 
-.smalltext{
-font-style: italic;
-font-size: 0.7rem;
+@media (max-width: 560px) {
+  .drive-file-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.drive-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 18px;
+}
+
+.drive-account-button,
+.drive-close-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 12px;
+  border: 1px solid var(--drive-border);
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  fill: currentColor;
+  cursor: pointer;
+}
+
+.drive-account-button svg,
+.drive-close-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.drive-account-button:hover,
+.drive-account-button:focus-visible,
+.drive-close-button:hover,
+.drive-close-button:focus-visible {
+  background: var(--button-hover);
+  color: var(--button-hover-f);
+  fill: var(--button-hover-f);
+}
+
+.drive-error {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--error, #b00020);
+  background: color-mix(in srgb, var(--error, #b00020) 12%, transparent);
+  color: var(--error, #b00020);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .drive-save-panel,
+  .drive-files-panel {
+    padding: 14px;
+  }
+
+  .drive-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .drive-save-button {
+    width: 100%;
+  }
+
+  .drive-refresh {
+    align-self: flex-end;
+    margin-top: -42px;
+  }
 }
 </style>

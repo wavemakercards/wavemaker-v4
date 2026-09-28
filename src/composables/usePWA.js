@@ -1,13 +1,18 @@
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const needRefresh = ref(false)
+const offlineReady = ref(false)
+const canInstall = ref(false)
+const installPrompt = ref(null)
+
+let updateSW = null
+let mountedConsumers = 0
+let pwaInitStarted = false
+let updateInterval = null
+let onServiceWorkerMessage = null
+let onControllerChange = null
 
 export function usePWA() {
-  const needRefresh = ref(false)
-  const offlineReady = ref(false)
-  const canInstall = ref(false)
-  const installPrompt = ref(null)
-
-  let updateSW = null
-
   // Session storage keys for tracking shown prompts
   const SESSION_KEYS = {
     INSTALL_PROMPT_SHOWN: 'pwa_install_prompt_shown',
@@ -186,6 +191,9 @@ export function usePWA() {
   }
 
   onMounted(() => {
+    mountedConsumers += 1
+    if (mountedConsumers > 1) return
+
     // Listen for install prompt
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     window.addEventListener('appinstalled', handleAppInstalled)
@@ -210,7 +218,7 @@ export function usePWA() {
       })
 
       // Handle service worker messages
-      navigator.serviceWorker.addEventListener('message', (event) => {
+      onServiceWorkerMessage = (event) => {
         console.log('Service worker message received:', event.data)
         
         if (event.data && (event.data.type === 'SW_UPDATED' || event.data.type === 'workbox-broadcast-update')) {
@@ -220,14 +228,16 @@ export function usePWA() {
             needRefresh.value = true
           }
         }
-      })
+      }
       
       // Also listen for service worker controller changes
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
+      onControllerChange = () => {
         console.log('Service worker controller changed - new version active')
         // Reload the page to use the new service worker
         window.location.reload()
-      })
+      }
+      navigator.serviceWorker.addEventListener('message', onServiceWorkerMessage)
+      navigator.serviceWorker.addEventListener('controllerchange', onControllerChange)
     }
 
     // Check if app is standalone (installed)
@@ -237,7 +247,7 @@ export function usePWA() {
     }
     
     // Periodically check for updates (every 5 minutes)
-    setInterval(async () => {
+    updateInterval = setInterval(async () => {
       if ('serviceWorker' in navigator) {
         try {
           const registration = await navigator.serviceWorker.ready
@@ -249,8 +259,30 @@ export function usePWA() {
     }, 5 * 60 * 1000) // 5 minutes
   })
 
+  onUnmounted(() => {
+    mountedConsumers -= 1
+    if (mountedConsumers > 0) return
+
+    window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    window.removeEventListener('appinstalled', handleAppInstalled)
+    if ('serviceWorker' in navigator) {
+      if (onServiceWorkerMessage) {
+        navigator.serviceWorker.removeEventListener('message', onServiceWorkerMessage)
+      }
+      if (onControllerChange) {
+        navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange)
+      }
+    }
+    clearInterval(updateInterval)
+    updateInterval = null
+    onServiceWorkerMessage = null
+    onControllerChange = null
+  })
+
   // Initialize Vite PWA plugin integration
   const initVitePWA = () => {
+    if (pwaInitStarted) return
+    pwaInitStarted = true
     console.log('Initializing Vite PWA...')
     
     // Wait for the PWA registration to be available
