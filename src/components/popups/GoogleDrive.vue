@@ -99,9 +99,6 @@ export default {
       if (!timestamp) return "Date unavailable"
       return new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(timestamp))
     }
-  },
-  async mounted() {
-    if (!this.$root.GoogleDriveApi.loggedin) await this.$root.GoogleDriveSignIn()
   }
 }
 </script>

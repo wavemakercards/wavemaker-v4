@@ -186,7 +186,16 @@ const GoogleDriveApi = {
                 })
                 this.$root.$data.popup.name = null
             } catch (error) {
-                this.GoogleDriveApi.error = "The project could not be saved to Google Drive."
+                const status = Number(error?.status || error?.code || error?.result?.error?.code || error?.error?.code)
+                if (status === 401) {
+                    window.gapi.client.setToken('')
+                    this.GoogleDriveApi.loggedin = false
+                    this.GoogleDriveApi.files = []
+                    this.GoogleDriveApi.error = "Your Google Drive session has expired. Sign in again, then retry saving."
+                    this.$root.$data.popup.name = 'GoogleDrive'
+                } else {
+                    this.GoogleDriveApi.error = "The project could not be saved to Google Drive."
+                }
                 console.error("Google Drive file write failed:", error)
             } finally {
                 this.GoogleDriveApi.loading = false
