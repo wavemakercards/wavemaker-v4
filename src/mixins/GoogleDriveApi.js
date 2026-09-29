@@ -2,8 +2,8 @@ const GoogleDriveApi = {
     data() {
         return {
             GoogleDriveApi: {
-                CLIENT_ID: "451112835343-dfdk5iglpkorfmt3ouu5puogmvmvn22p.apps.googleusercontent.com",
-                API_KEY: "AIzaSyAq4C0VCC3I88n7GdW1VilDmcZdYle-UoU",
+                CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+                API_KEY: import.meta.env.VITE_GOOGLE_API_KEY,
                 DISCOVERY_DOC: 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
                 SCOPES: 'https://www.googleapis.com/auth/drive.file',
                 gapiInited: false,
