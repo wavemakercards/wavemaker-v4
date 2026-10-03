@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A quick guide to writing and organizing a manuscript in Wavemaker Cards.">
+  <title>Writing in Wavemaker Cards — Help</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1e2933;
+      --muted: #536575;
+      --paper: #ffffff;
+      --canvas: #f1f5f7;
+      --accent: #700670;
+      --accent-dark: #580658;
+      --line: #d9e2e7;
+      --tip: #f7edf7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a {
+      color: var(--accent-dark);
+    }
+
+    a:focus-visible {
+      outline: 3px solid #e3a52c;
+      outline-offset: 3px;
+    }
+
+    .topbar {
+      padding: 14px 24px;
+      background: #2c2c2c;
+      color: #fff;
+    }
+
+    .topbar a {
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 760px);
+      gap: 32px;
+      width: min(1080px, 100%);
+      margin: 32px auto;
+      padding: 0 24px;
+      align-items: start;
+    }
+
+    nav,
+    main {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    nav {
+      position: sticky;
+      top: 20px;
+      padding: 18px;
+    }
+
+    nav strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    nav ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    nav li + li {
+      margin-top: 7px;
+    }
+
+    main {
+      padding: 36px clamp(22px, 5vw, 52px);
+    }
+
+    h1,
+    h2 {
+      line-height: 1.2;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      margin: 36px 0 10px;
+      font-size: 1.45rem;
+    }
+
+    .intro {
+      margin: 0 0 26px;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    section {
+      scroll-margin-top: 20px;
+    }
+
+    ol.steps {
+      padding-left: 24px;
+    }
+
+    ol.steps li {
+      padding-left: 5px;
+    }
+
+    ol.steps li + li {
+      margin-top: 10px;
+    }
+
+    .tip {
+      margin: 20px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      border-radius: 4px;
+      background: var(--tip);
+    }
+
+    .tip p {
+      margin: 0;
+    }
+
+    footer {
+      margin-top: 32px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 700px) {
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin: 16px auto;
+        padding: 0 14px;
+      }
+
+      nav {
+        position: static;
+      }
+
+      nav ol {
+        columns: 2;
+      }
+
+      main {
+        padding: 26px 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    Wavemaker Cards help
+  </header>
+
+  <div class="layout">
+    <nav aria-label="On this page">
+      <strong>Writing guide</strong>
+      <ol>
+        <li><a href="#start">Start a manuscript</a></li>
+        <li><a href="#organize">Organize chapters</a></li>
+        <li><a href="#write">Write and format</a></li>
+        <li><a href="#export">Export your work</a></li>
+        <li><a href="#backup">Save a backup</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <h1>Write with Wavemaker</h1>
+      <p class="intro">Use the Writer to draft a book, split it into sections, and export a copy when you are ready.</p>
+      <p>Looking for more help? Visit the <a href="https://www.reddit.com/r/wavemakercards/">Wavemaker Cards Reddit community</a> to join discussions with other users, or watch the <a href="https://www.youtube.com/playlist?list=PL9vtZFKBfJNtIPuNb8nN0mT-7e_NVavvW">Wavemaker video tutorials</a> for step-by-step guidance.</p>
+      <p>These are  community resources. Thank you to the Reddit contributors and <a href="https://www.youtube.com/@authorkimmymoon" >@authorkimmymoon</a> for sharing their time and knowledge.</p>
+    
+
+      <section id="start">
+        <h2>1. Start a manuscript</h2>
+        <ol class="steps">
+          <li>Open a project in Wavemaker Cards. If you are starting fresh, choose <strong>Get Started</strong> to create one.</li>
+          <li>Open the navigation menu and choose <strong>Writer</strong> (the book icon).</li>
+          <li>On the Writer screen, choose the <strong>+</strong> button to create a manuscript. It opens a new, untitled manuscript.</li>
+          <li>Give it a title and, if useful, a short description.</li>
+        </ol>
+      </section>
+
+      <section id="organize">
+        <h2>2. Organize chapters and sections</h2>
+        <p>The panel on the left holds your manuscript structure. Use the folder button at the bottom to add a folder, and the page button to add a writing section. Select a folder or section first to add items inside it or nearby.</p>
+        <p>Choose an item in the left panel to open it. You can rename a section from its title field above the editor, or rename a folder from its title field when the folder is open. Drag items in the panel to reorder them.</p>
+      </section>
+
+      <section id="write">
+        <h2>3. Write and format</h2>
+        <p>Click in the editor and start writing. The formatting toolbar lets you use bold, italic, strikethrough, headings, lists, and images. Hover over a toolbar button to see its label.</p>
+        <p>Wavemaker saves edits as you make them. The Writer shows word counts for a section and for the whole manuscript.</p>
+        <div class="tip">
+          <p><strong>Tip:</strong> Use folders to group chapters or parts, and writing sections for the text you want to edit and count separately.</p>
+        </div>
+      </section>
+
+      <section id="export">
+        <h2>4. Export your manuscript</h2>
+        <p>Return to the manuscript overview by choosing the manuscript name at the top of the left panel. Choose <strong>Export a .doc file of this manuscript</strong> to download the manuscript as a Word-compatible document. To export only a folder, open that folder and choose its export button.</p>
+      </section>
+
+      <section id="backup">
+        <h2>5. Save a project backup</h2>
+        <p>Word export gives you a readable document, but it is not a full project backup. To back up your Wavemaker project, use the <strong>Save</strong> button in the top toolbar and keep the downloaded <code>.wm4</code> file somewhere safe. You can also connect Google Drive from the toolbar to store or sync project data.</p>
+        <div class="tip">
+          <p><strong>Keep a backup:</strong> Your writing is stored in the browser for the current project. Download a project backup regularly, especially before clearing browser data or moving to another device.</p>
+        </div>
+      </section>
+
+      <footer>
+        &copy; wavemakercards
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

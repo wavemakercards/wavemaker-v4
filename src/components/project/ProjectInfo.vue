@@ -108,7 +108,7 @@ export default {
 
     },
     gettingStartedPopup() {
-      this.$root.openInNew("https://wavemaker.co.uk/getstarted/");
+      this.$root.openInNew("help/index.html");
     }
   }
 };
